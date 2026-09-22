@@ -6,7 +6,7 @@ export const site = {
   email: 'hello@example.com',
   location: 'Japan',
   socials: [
-    { label: 'GitHub', href: 'https://github.com/' },
+    { label: 'GitHub', href: 'https://github.com/massun1999' },
     { label: 'X', href: 'https://x.com/' },
   ],
 } as const;
