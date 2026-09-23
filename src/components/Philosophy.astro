@@ -1,0 +1,186 @@
+---
+import { philosophy } from '../data/site';
+---
+
+<section class="philosophy" id="thoughts" aria-labelledby="philosophy-heading">
+  <div class="philosophy__intro reveal">
+    <div class="philosophy__copy">
+      <div class="philosophy__head">
+        <h2 id="philosophy-heading" class="sec-title">{philosophy.title}</h2>
+        <p class="sec-sub">{philosophy.subtitle}</p>
+      </div>
+      <p class="philosophy__headline">{philosophy.headline}</p>
+      <p class="philosophy__lead">
+        {philosophy.lead.map((line) => (
+          <span>{line}</span>
+        ))}
+      </p>
+    </div>
+
+    <div class="philosophy__figure" aria-hidden="true">
+      <img
+        src={philosophy.figure.src}
+        alt=""
+        width={philosophy.figure.width}
+        height={philosophy.figure.height}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  </div>
+
+  <div class="philosophy__grid reveal">
+    {
+      philosophy.columns.map((column) => (
+        <article class="philosophy__col">
+          <h3 class="philosophy__col-title">
+            {column.title.map((line) => (
+              <span>{line}</span>
+            ))}
+          </h3>
+          <div class="philosophy__col-body">
+            {column.body.map((para) => (
+              <p>{para}</p>
+            ))}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .philosophy {
+    width: min(100% - (var(--space-inline) * 2), 69.375rem);
+    margin-inline: auto;
+    padding-block: clamp(3.5rem, 2rem + 5vw, 6.5rem);
+  }
+
+  /*
+    Figma 68:18 (566×340 @1512)
+    copy 420 / fig 83×307 / gap 63
+    title→headline 50 / headline→lead 32
+  */
+  .philosophy__intro {
+    display: grid;
+    grid-template-columns: minmax(0, max-content) auto;
+    align-items: end;
+    justify-content: start;
+    column-gap: clamp(1.5rem, 4.167vw, 3.9375rem); /* 63px @1512 */
+    margin-bottom: clamp(2.5rem, 1.5rem + 4vw, 5rem);
+  }
+
+  .philosophy__copy {
+    min-width: 0;
+    width: max-content;
+    max-width: min(100%, 28rem);
+  }
+
+  .philosophy__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.625rem; /* 26px */
+    margin-bottom: clamp(1.5rem, 3.307vw, 3.125rem); /* 50px @1512 */
+  }
+
+  .philosophy__headline {
+    margin: 0 0 clamp(1rem, 2.116vw, 2rem); /* 32px @1512 */
+    font-family: var(--font-sans);
+    font-size: var(--text-section);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+    white-space: nowrap;
+  }
+
+  .philosophy__lead {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-sans);
+    font-size: var(--text-section-en);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  .philosophy__figure {
+    width: clamp(3.75rem, 5.489vw, 5.1875rem); /* 83px @1512 */
+    align-self: end;
+  }
+
+  .philosophy__figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .philosophy__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
+
+  .philosophy__col {
+    position: relative;
+    padding-inline: 0 clamp(0.5rem, 0.2rem + 1vw, 1rem);
+  }
+
+  .philosophy__col + .philosophy__col {
+    border-left: 1px solid var(--color-ink);
+    padding-left: clamp(1rem, 0.6rem + 1.5vw, 2.5rem);
+  }
+
+  .philosophy__col-title {
+    margin: 0 0 1.25rem;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.9rem + 0.35vw, 1.178rem);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  .philosophy__col-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+  }
+
+  .philosophy__col-body p {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: clamp(0.875rem, 0.82rem + 0.2vw, 1rem);
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .philosophy__intro {
+      column-gap: 1.25rem;
+    }
+
+    .philosophy__headline {
+      white-space: normal;
+    }
+
+    .philosophy__figure {
+      width: clamp(3.5rem, 16vw, 4.5rem);
+    }
+
+    .philosophy__grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+
+    .philosophy__col + .philosophy__col {
+      border-left: 0;
+      border-top: 1px solid var(--color-ink);
+      padding-left: 0;
+      padding-top: 2.5rem;
+    }
+  }
+</style>

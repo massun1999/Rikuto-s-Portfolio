@@ -1,0 +1,346 @@
+---
+import { performance } from '../data/site';
+---
+
+<section class="performance" id="failures" aria-labelledby="performance-heading">
+  <div class="performance__figure performance__figure--left" aria-hidden="true">
+    <img
+      src={performance.figures.left.src}
+      alt=""
+      width={performance.figures.left.width}
+      height={performance.figures.left.height}
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+
+  <div class="performance__intro reveal">
+    <div class="sec-head performance__head">
+      <h2 id="performance-heading" class="sec-title performance__title">{performance.title}</h2>
+      <p class="sec-sub performance__subtitle">{performance.subtitle}</p>
+    </div>
+    <p class="performance__lead">
+      {performance.lead[0]}<br class="performance__lead-br" />{performance.lead[1]}
+    </p>
+  </div>
+
+  <!-- PC: 従来の箇条書き -->
+  <ul class="performance__list performance__list--pc reveal">
+    {
+      performance.items.map((item) => (
+        <li>
+          <span class="performance__bullet" aria-hidden="true">
+            ・
+          </span>
+          <span>{item}</span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <!-- SP: カード -->
+  <div class="performance__cards reveal">
+    {
+      performance.groups.map((group) => (
+        <div class="performance__group">
+          <h3 class="performance__group-label">{group.label}</h3>
+          <ul class="performance__card-list">
+            {group.items.map((item) => (
+              <li class="performance__card">
+                <p class="performance__card-industry">{item.industry}</p>
+                <p class="performance__card-metric">
+                  {item.metric.prefix}
+                  <span class="performance__card-num">{item.metric.from}</span>
+                  {'to' in item.metric && item.metric.to ? (
+                    <>
+                      <span class="performance__card-arrow"> → </span>
+                      <span class="performance__card-num">{item.metric.to}</span>
+                    </>
+                  ) : null}
+                  {'suffix' in item.metric && item.metric.suffix ? (
+                    <span class="performance__card-suffix">{item.metric.suffix}</span>
+                  ) : null}
+                </p>
+                {'detail' in item && item.detail ? (
+                  <p class="performance__card-detail">{item.detail}</p>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="performance__figure performance__figure--right" aria-hidden="true">
+    <img
+      src={performance.figures.right.src}
+      alt=""
+      width={performance.figures.right.width}
+      height={performance.figures.right.height}
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+
+  <p class="performance__note reveal">{performance.note}</p>
+</section>
+
+<style>
+  /*
+    PC (Figma 71:123): intro上 / left|list|right / note下 — 変更しない
+    SP: カード化・タイポ整理・立ち絵上のみ（座り絵は CTA へ）
+  */
+  .performance {
+    width: min(100%, 94.5rem);
+    margin-inline: auto;
+    padding-block: clamp(3.5rem, 2rem + 5vw, 6.5rem);
+    overflow: clip;
+    display: grid;
+    grid-template-columns:
+      min(24.6875rem, 26.12vw)
+      min(35.125rem, 37.17vw)
+      min(22rem, 23.28vw);
+    grid-template-areas:
+      '.     intro .'
+      'left  list  right'
+      '.     note  .';
+    justify-content: space-between;
+    align-items: start;
+    column-gap: 0;
+    row-gap: 0;
+  }
+
+  .performance__figure--left {
+    grid-area: left;
+    width: 100%;
+  }
+
+  .performance__figure--right {
+    grid-area: right;
+    width: 100%;
+  }
+
+  .performance__intro {
+    grid-area: intro;
+    width: 100%;
+    margin-bottom: clamp(1.5rem, 6.4vw, 6.0625rem);
+    text-align: center;
+  }
+
+  .performance__intro .sec-head {
+    margin-bottom: 0;
+  }
+
+  .performance__lead {
+    margin: clamp(0.5rem, 2.9vw, 2.75rem) 0 0;
+    font-family: var(--font-sans);
+    font-size: clamp(0.8125rem, 0.75rem + 0.2vw, 0.9375rem);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  .performance__lead-br {
+    display: none;
+  }
+
+  .performance__list--pc {
+    grid-area: list;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2.3125rem;
+  }
+
+  .performance__cards {
+    display: none;
+  }
+
+  .performance__list--pc li {
+    display: grid;
+    grid-template-columns: 1.125rem 1fr;
+    column-gap: 0.8125rem;
+    font-family: var(--font-sans);
+    font-size: clamp(0.875rem, 0.8rem + 0.25vw, 1.125rem);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  .performance__bullet {
+    line-height: 2;
+  }
+
+  .performance__figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .performance__note {
+    grid-area: note;
+    width: 100%;
+    max-width: 40.8125rem;
+    margin: clamp(2rem, 1.2rem + 2.5vw, 3.5rem) auto 0;
+    font-family: var(--font-sans);
+    font-size: clamp(0.75rem, 0.7rem + 0.15vw, 0.875rem);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+    text-align: left;
+  }
+
+  @media (max-width: 768px) {
+    .performance {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      padding-inline: 1.5rem; /* 24px */
+      padding-block: 2.5rem 0; /* 40px top; CTA側で下余白 */
+      overflow: visible;
+      row-gap: 0;
+    }
+
+    .performance__figure--left {
+      width: min(48%, 11.25rem); /* ~45–50%, max 180px */
+      margin: 0 auto 1.5rem; /* 24px to heading */
+      order: 1;
+    }
+
+    .performance__figure--right {
+      display: none; /* 座り絵は CTA 側へ */
+    }
+
+    .performance__intro {
+      order: 2;
+      width: 100%;
+      margin-bottom: 2.5rem; /* 40px */
+    }
+
+    .performance__title {
+      font-size: 1.75rem; /* 28px */
+      letter-spacing: 0.2em;
+      font-weight: 700;
+    }
+
+    .performance__subtitle {
+      font-size: 0.6875rem; /* 11px */
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: #888;
+    }
+
+    .performance__lead {
+      margin-top: 1rem; /* 16px */
+      font-size: 0.9375rem; /* 15px */
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      line-height: 1.8;
+      color: var(--color-ink);
+    }
+
+    .performance__lead-br {
+      display: inline;
+    }
+
+    .performance__list--pc {
+      display: none;
+    }
+
+    .performance__cards {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem; /* 40px between groups */
+      order: 3;
+      width: 100%;
+    }
+
+    .performance__group-label {
+      margin: 0 0 0.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.9375rem; /* 15px */
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      line-height: 1.8;
+      color: #666;
+    }
+
+    .performance__card-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .performance__card {
+      border-top: 1px solid #e5e5e5;
+      padding: 1.25rem 0; /* 20px */
+    }
+
+    .performance__card:last-child {
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .performance__card-industry {
+      margin: 0 0 0.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.75rem; /* 12px */
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      line-height: 1.8;
+      color: #666;
+    }
+
+    .performance__card-metric {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: 1.125rem; /* 18px */
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.5;
+      color: var(--color-ink);
+    }
+
+    .performance__card-num {
+      font-size: 1.5rem; /* 24px */
+      font-weight: 700;
+    }
+
+    .performance__card-arrow,
+    .performance__card-suffix {
+      font-size: 1.125rem; /* 18px — 数字以外は大きくしすぎない */
+      font-weight: 700;
+    }
+
+    .performance__card-detail {
+      margin: 0.5rem 0 0;
+      font-family: var(--font-sans);
+      font-size: 0.8125rem; /* 13px */
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      line-height: 1.8;
+      color: var(--color-ink);
+    }
+
+    .performance__note {
+      order: 4;
+      width: 100%;
+      max-width: none;
+      margin: 1.5rem 0 0; /* 24px under list */
+      padding-inline: 0;
+      font-size: 0.6875rem; /* 11px */
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      line-height: 1.7;
+      color: #999;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+  }
+</style>

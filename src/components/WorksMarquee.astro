@@ -1,0 +1,94 @@
+---
+import { works } from '../data/site';
+
+const slides = [...works.items, ...works.items];
+---
+
+<section class="works" id="done" aria-labelledby="works-heading">
+  <div class="sec-head reveal">
+    <h2 id="works-heading" class="sec-title">{works.title}</h2>
+    <p class="sec-sub">{works.subtitle}</p>
+  </div>
+
+  <div class="works__viewport" aria-label="制作実績のスライド">
+    <div class="works__track">
+      {
+        slides.map((item, index) => (
+          <figure class="works__item">
+            <img
+              src={item.src}
+              alt={index < works.items.length ? item.alt : ''}
+              width={item.width}
+              height={item.height}
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .works {
+    padding-block: clamp(3.5rem, 2rem + 5vw, 6.5rem);
+    overflow: clip;
+  }
+
+  .works .sec-head {
+    width: min(100% - (var(--space-inline) * 2), 73.9rem);
+    margin-inline: auto;
+  }
+
+  .works__viewport {
+    margin-top: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .works__track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    gap: clamp(1rem, 0.6rem + 1.2vw, 1.5rem);
+    animation: works-marquee 48s linear infinite;
+  }
+
+  .works__item {
+    margin: 0;
+    flex: 0 0 auto;
+    width: clamp(9.5rem, 7rem + 8vw, 12.75rem);
+    aspect-ratio: 611 / 1262;
+  }
+
+  .works__item img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  @keyframes works-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .works__track {
+      animation: none;
+      flex-wrap: wrap;
+      width: min(100% - (var(--space-inline) * 2), 73.9rem);
+      margin-inline: auto;
+      justify-content: center;
+    }
+
+    .works__item:nth-child(n + 8) {
+      display: none;
+    }
+  }
+</style>

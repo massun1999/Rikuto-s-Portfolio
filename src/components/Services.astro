@@ -1,0 +1,95 @@
+---
+import { services } from '../data/site';
+---
+
+<section class="services" id="doing" aria-labelledby="services-heading">
+  <div class="sec-head reveal">
+    <h2 id="services-heading" class="sec-title">{services.title}</h2>
+    <p class="sec-sub">{services.subtitle}</p>
+  </div>
+
+  <div class="services__grid reveal">
+    {
+      services.cards.map((card) => (
+        <article class="services__card">
+          <h3 class="services__card-title">{card.title}</h3>
+          <ul class="services__list">
+            {card.items.map((item) => (
+              <li>
+                <span class="services__dash" aria-hidden="true" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .services {
+    width: min(100% - (var(--space-inline) * 2), 73.9rem);
+    margin-inline: auto;
+    padding-block: clamp(3.5rem, 2rem + 5vw, 6.5rem);
+  }
+
+  .services__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 0.6rem + 1.5vw, 2.5625rem);
+  }
+
+  .services__card {
+    border: 1px solid var(--color-ink);
+    min-height: 20.9375rem;
+    padding: clamp(1.5rem, 1rem + 1.5vw, 2.55rem) clamp(1.25rem, 0.8rem + 1.2vw, 2.2rem);
+  }
+
+  .services__card-title {
+    margin: 0 0 1.75rem;
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.9rem + 0.35vw, 1.178rem);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  .services__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .services__list li {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    font-family: var(--font-sans);
+    font-size: clamp(0.8125rem, 0.75rem + 0.2vw, 0.875rem);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  .services__dash {
+    flex-shrink: 0;
+    width: 0.7rem;
+    height: 1px;
+    background: var(--color-ink);
+  }
+
+  @media (max-width: 768px) {
+    .services__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .services__card {
+      min-height: 0;
+    }
+  }
+</style>

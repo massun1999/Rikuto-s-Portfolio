@@ -1,0 +1,160 @@
+---
+import scribblePc from '../assets/mv/scribble.svg?raw';
+import scribbleSp from '../assets/mv/scribble-sp.svg?raw';
+
+interface Props {
+  variant: 'pc' | 'sp';
+}
+
+const { variant } = Astro.props;
+const markup = variant === 'pc' ? scribblePc : scribbleSp;
+const filterId = `scribble-live-${variant}`;
+---
+
+<div
+  class:list={['scribble', `scribble--${variant}`]}
+  data-scribble={variant}
+  data-filter-id={filterId}
+  aria-hidden="true"
+  set:html={markup}
+/>
+
+<style>
+  .scribble {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    color: var(--color-ink);
+  }
+
+  .scribble--pc {
+    top: 16.6%;
+    left: 74.1%;
+    width: 23.5%;
+  }
+
+  .scribble--sp {
+    display: none;
+    top: 28.8%;
+    left: 62.7%;
+    width: 49.2%;
+  }
+
+  .scribble :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .scribble :global(path) {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .scribble--pc {
+      display: none;
+    }
+
+    .scribble--sp {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  function clearScribble(slot: Element) {
+    slot.querySelectorAll('.scribble__layer, .scribble__defs').forEach((node) => {
+      node.remove();
+    });
+    const source = slot.querySelector('path:not(.scribble__layer)');
+    if (source instanceof SVGPathElement) {
+      source.getAnimations().forEach((animation) => animation.cancel());
+      source.style.filter = '';
+      source.style.strokeDasharray = '';
+      source.style.strokeDashoffset = '';
+      source.style.opacity = '';
+      source.style.display = '';
+    }
+  }
+
+  function playScribble(slot: Element) {
+    clearScribble(slot);
+    if (getComputedStyle(slot).display === 'none') return;
+
+    const svg = slot.querySelector('svg');
+    const source = slot.querySelector('path');
+    if (!(svg instanceof SVGSVGElement) || !(source instanceof SVGPathElement)) return;
+
+    const filterId = slot.getAttribute('data-filter-id') ?? 'scribble-live';
+    const length = source.getTotalLength();
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // 元パスは複製の種だけに使い、画面には出さない
+    source.style.display = 'none';
+
+    const makeLayer = (className: string, dashOn: number, dashOff: number) => {
+      const layer = source.cloneNode(true) as SVGPathElement;
+      layer.classList.add('scribble__layer', className);
+      layer.removeAttribute('id');
+      layer.style.display = '';
+      layer.style.opacity = '1';
+      layer.style.strokeDasharray = `${dashOn} ${dashOff}`;
+      layer.style.strokeDashoffset = '0';
+      svg.appendChild(layer);
+      return layer;
+    };
+
+    if (reduce) {
+      const still = makeLayer('scribble__a', length, 0);
+      still.style.strokeDasharray = 'none';
+      return;
+    }
+
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    defs.classList.add('scribble__defs');
+    defs.innerHTML = `
+      <filter id="${filterId}" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="2" result="noise">
+          <animate attributeName="baseFrequency" dur="10s" values="0.016;0.024;0.014;0.02;0.016" repeatCount="indefinite" />
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.2" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    `;
+    svg.insertBefore(defs, svg.firstChild);
+
+    // 2重：同じ線を重ねて、逆方向に流す
+    const forward = makeLayer('scribble__a', Math.max(22, length * 0.05), Math.max(14, length * 0.032));
+    const reverse = makeLayer('scribble__b', Math.max(16, length * 0.036), Math.max(20, length * 0.04));
+    forward.style.filter = `url(#${filterId})`;
+    reverse.style.filter = `url(#${filterId})`;
+
+    forward.animate([{ strokeDashoffset: 0 }, { strokeDashoffset: -length }], {
+      duration: 22000,
+      easing: 'linear',
+      iterations: Infinity,
+    });
+
+    reverse.animate([{ strokeDashoffset: 0 }, { strokeDashoffset: length }], {
+      duration: 22000,
+      easing: 'linear',
+      iterations: Infinity,
+    });
+  }
+
+  function init() {
+    document.querySelectorAll('[data-scribble]').forEach(playScribble);
+  }
+
+  let resizeTimer = 0;
+  init();
+  document.addEventListener('astro:page-load', init);
+  window.addEventListener('resize', () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(init, 150);
+  });
+</script>

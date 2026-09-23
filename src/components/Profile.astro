@@ -1,0 +1,291 @@
+---
+import { profile } from '../data/site';
+---
+
+<section class="profile" id="profile" aria-labelledby="profile-heading">
+  <div class="profile__head reveal">
+    <h2 id="profile-heading" class="profile__title">じこしょうかい</h2>
+    <p class="profile__subtitle">profile</p>
+  </div>
+
+  <div class="profile__body reveal">
+    <div class="profile__photo">
+      <img
+        src={profile.portrait.src}
+        alt={profile.portrait.alt}
+        width={profile.portrait.width}
+        height={profile.portrait.height}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    <div class="profile__info">
+      <p class="profile__role">{profile.role}</p>
+      <p class="profile__name">
+        <span class="profile__name-ja">{profile.fullName}</span>
+        <span class="profile__name-rule" aria-hidden="true"></span>
+        <span class="profile__name-en">{profile.nameEn}</span>
+      </p>
+      <p class="profile__meta">{profile.birth}</p>
+      <p class="profile__meta">{profile.experience}</p>
+
+      <div class="profile__skills">
+        <p class="profile__skills-label">Skills</p>
+        <p class="profile__skills-text">{profile.skills}</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="profile__bio reveal">{profile.bio}</p>
+
+  <ul class="profile__socials reveal">
+    {
+      profile.socials.map((social) => (
+        <li>
+          <a
+            class:list={['profile__social', `profile__social--${social.label.toLowerCase()}`]}
+            href={social.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={social.label}
+          >
+            <img
+              src={social.icon}
+              alt=""
+              width={social.width}
+              height={social.height}
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .profile {
+    width: min(100% - (var(--space-inline) * 2), 56.5rem); /* ~904px content */
+    margin-inline: auto;
+    padding-block: clamp(3.5rem, 2rem + 4vw, 6rem) clamp(4rem, 2.5rem + 5vw, 7rem);
+    color: var(--color-ink);
+  }
+
+  .profile__head {
+    text-align: center;
+    margin-bottom: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+  }
+
+  .profile__title {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: clamp(1.75rem, 1.1rem + 2.2vw, 2.7857rem); /* → 44.57px */
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  .profile__subtitle {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: clamp(0.875rem, 0.7rem + 0.55vw, 1.25rem); /* → 20px */
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  .profile__body {
+    display: grid;
+    grid-template-columns: minmax(0, 21.5625rem) minmax(0, 1fr); /* 345px */
+    gap: clamp(1.5rem, 1rem + 2vw, 3.875rem); /* ~62px */
+    align-items: start;
+  }
+
+  .profile__photo {
+    width: 100%;
+    max-width: 21.5625rem;
+    aspect-ratio: 345 / 469;
+    border-radius: 0.4375rem; /* 7px */
+    overflow: hidden;
+  }
+
+  .profile__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 45% 40%;
+  }
+
+  .profile__info {
+    padding-top: clamp(0.5rem, 0.2rem + 1vw, 1.5rem);
+  }
+
+  .profile__role,
+  .profile__meta,
+  .profile__skills-text,
+  .profile__bio {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  .profile__role,
+  .profile__meta {
+    font-size: clamp(0.875rem, 0.75rem + 0.4vw, 1.125rem); /* → 18px */
+  }
+
+  .profile__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin: 0.15rem 0 0.85rem;
+  }
+
+  .profile__name-ja {
+    font-family: var(--font-sans);
+    font-size: clamp(1.125rem, 0.95rem + 0.6vw, 1.5rem); /* → 24px */
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  .profile__name-en {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.85rem + 0.5vw, 1.25rem); /* → 20px */
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  .profile__name-rule {
+    display: inline-block;
+    width: 1px;
+    height: 1.25rem;
+    background: var(--color-ink);
+  }
+
+  .profile__skills {
+    margin-top: 0.85rem;
+  }
+
+  .profile__skills-label {
+    display: inline-block;
+    margin: 0 0 0.85rem;
+    padding: 0.15rem 0.65rem 0.05rem;
+    background: var(--color-ink);
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: clamp(0.875rem, 0.75rem + 0.4vw, 1.125rem);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  .profile__skills-text {
+    max-width: 30.8rem;
+    font-size: clamp(0.875rem, 0.8rem + 0.25vw, 1rem); /* → 16px */
+  }
+
+  .profile__bio {
+    width: min(100%, 37.2rem); /* ~595px */
+    margin: clamp(2.5rem, 1.5rem + 3vw, 4.1rem) auto 0;
+    font-size: clamp(0.875rem, 0.8rem + 0.25vw, 1rem);
+    text-align: left;
+  }
+
+  .profile__socials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1.25rem, 0.9rem + 1.2vw, 1.75rem);
+    list-style: none;
+    margin: clamp(1.75rem, 1rem + 2vw, 2.8rem) 0 0;
+    padding: 0;
+  }
+
+  .profile__social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .profile__social:hover,
+  .profile__social:focus-visible {
+    opacity: 0.55;
+  }
+
+  .profile__social img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+  }
+
+  .profile__social--instagram img {
+    width: 2.65rem;
+    height: 2.65rem;
+  }
+
+  .profile__social--threads img {
+    width: 2.65rem;
+    height: auto;
+  }
+
+  .profile__social--note img {
+    width: 5.5rem;
+    height: auto;
+  }
+
+  @media (max-width: 768px) {
+    .profile {
+      width: min(100% - (var(--space-inline) * 2), 25.125rem);
+    }
+
+    .profile__body {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      gap: 1.75rem;
+    }
+
+    .profile__photo {
+      max-width: 16rem;
+    }
+
+    .profile__info {
+      width: 100%;
+      padding-top: 0;
+    }
+
+    .profile__name-rule {
+      display: none;
+    }
+
+    .profile__bio {
+      width: 100%;
+    }
+
+    .profile__socials {
+      justify-content: flex-start;
+      gap: 1rem;
+    }
+
+    .profile__social--instagram img {
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+
+    .profile__social--threads img {
+      width: 1.75rem;
+    }
+
+    .profile__social--note img {
+      width: 3.5rem;
+    }
+  }
+</style>

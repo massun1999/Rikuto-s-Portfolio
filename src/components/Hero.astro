@@ -1,156 +1,163 @@
 ---
 import { site } from '../data/site';
+import ScribbleDraw from './ScribbleDraw.astro';
+
+const headline = ['得意を磨く。', '特異になる。', '化ける。'] as const;
 ---
 
-<section class="hero" aria-label="イントロ">
-  <div class="hero__plane" aria-hidden="true"></div>
-  <div class="container hero__content">
-    <p class="hero__eyebrow">{site.title}</p>
-    <h1 class="hero__name">{site.name}</h1>
-    <p class="hero__kana">{site.fullName}</p>
-    <p class="hero__tagline">{site.tagline}</p>
-    <div class="hero__actions">
-      <a class="btn btn--primary" href="#works">作品を見る</a>
-      <a class="btn btn--ghost" href="#contact">連絡する</a>
+<section class="mv" aria-label="メインビジュアル">
+  <div class="mv__frame">
+    <p class="mv__brand">{site.brand}</p>
+
+    <h1 class="mv__headline">
+      {headline.map((line) => <span>{line}</span>)}
+    </h1>
+
+    <ScribbleDraw variant="pc" />
+    <ScribbleDraw variant="sp" />
+
+    <div class="mv__art" aria-hidden="true">
+      <img
+        class="mv__lines mv__lines--pc"
+        src="/images/mv/lines.svg"
+        alt=""
+        width="1323"
+        height="926"
+        decoding="async"
+      />
+      <img
+        class="mv__lines mv__lines--sp"
+        src="/images/mv/lines-sp.svg"
+        alt=""
+        width="352"
+        height="596"
+        decoding="async"
+      />
+      <div class="mv__walker-wrap">
+        <img
+          class="mv__walker"
+          src="/images/mv/walker.webp"
+          alt=""
+          width="1152"
+          height="1728"
+          decoding="async"
+          fetchpriority="high"
+        />
+      </div>
     </div>
   </div>
 </section>
 
 <style>
-  .hero {
+  .mv {
     position: relative;
-    min-height: min(100svh, 56rem);
-    display: grid;
-    align-items: end;
-    padding-block: clamp(5rem, 14vw, 9rem) clamp(3rem, 8vw, 5rem);
     overflow: clip;
+    background: var(--color-bg);
   }
 
-  .hero__plane {
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(120deg, rgba(15, 138, 122, 0.22), transparent 42%),
-      linear-gradient(200deg, rgba(16, 24, 32, 0.08), transparent 55%),
-      radial-gradient(ellipse 70% 55% at 78% 30%, rgba(15, 138, 122, 0.28), transparent 60%);
-    animation: plane-drift 14s ease-in-out infinite alternate;
-  }
-
-  .hero__plane::after {
-    content: '';
-    position: absolute;
-    inset: 12% 8% auto auto;
-    width: min(42vw, 28rem);
-    aspect-ratio: 1;
-    border: 1px solid rgba(16, 24, 32, 0.14);
-    border-radius: 42% 58% 48% 52%;
-    transform: rotate(-12deg);
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.35), transparent 60%);
-  }
-
-  .hero__content {
+  .mv__frame {
     position: relative;
-    z-index: 1;
+    width: min(100%, var(--mv-max));
+    margin-inline: auto;
+    min-height: min(100dvh, 69.375rem);
+    aspect-ratio: 1512 / 1110;
   }
 
-  .hero__eyebrow {
-    margin: 0 0 1rem;
-    font-family: var(--font-display);
-    font-size: 0.85rem;
+  .mv__brand {
+    position: absolute;
+    z-index: 3;
+    top: 3.7%;
+    left: 3.3%;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--text-brand);
     font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--accent-deep);
-    opacity: 0;
-    animation: rise 0.8s ease forwards 0.1s;
+    letter-spacing: var(--track-brand);
+    line-height: 2;
+    white-space: nowrap;
   }
 
-  .hero__name {
+  .mv__headline {
+    position: absolute;
+    z-index: 3;
+    top: 12.3%;
+    left: 27.4%;
+    display: flex;
+    flex-direction: column;
+    width: max-content;
     margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(4.2rem, 16vw, 9.5rem);
-    font-weight: 800;
-    letter-spacing: -0.06em;
-    line-height: 0.9;
-    opacity: 0;
-    animation: rise 0.9s ease forwards 0.2s;
-  }
-
-  .hero__kana {
-    margin: 0.85rem 0 0;
-    font-size: 1.05rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    color: var(--ink-soft);
-    opacity: 0;
-    animation: rise 0.8s ease forwards 0.35s;
-  }
-
-  .hero__tagline {
-    margin: 1.5rem 0 0;
-    max-width: 28rem;
-    font-size: clamp(1.05rem, 2.2vw, 1.25rem);
-    color: var(--ink-soft);
-    opacity: 0;
-    animation: rise 0.8s ease forwards 0.45s;
-  }
-
-  .hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.85rem;
-    margin-top: 2rem;
-    opacity: 0;
-    animation: rise 0.8s ease forwards 0.55s;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 2.85rem;
-    padding: 0 1.25rem;
-    border: 1px solid transparent;
-    font-family: var(--font-display);
-    font-size: 0.95rem;
+    font-size: var(--text-headline);
     font-weight: 700;
-    letter-spacing: 0.02em;
-    text-decoration: none;
-    transition:
-      background 0.2s ease,
-      color 0.2s ease,
-      border-color 0.2s ease,
-      transform 0.2s ease;
+    letter-spacing: var(--track-headline);
+    line-height: 2;
   }
 
-  .btn:hover {
-    transform: translateY(-1px);
+  .mv__headline span {
+    display: block;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(0.6rem);
+    animation: mv-rise 0.85s ease forwards;
   }
 
-  .btn--primary {
-    background: var(--ink);
-    color: #f5f8fb;
+  .mv__headline span:nth-child(1) {
+    animation-delay: 0.08s;
+  }
+  .mv__headline span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .mv__headline span:nth-child(3) {
+    animation-delay: 0.32s;
   }
 
-  .btn--primary:hover {
-    background: var(--accent-deep);
-    color: #f5f8fb;
+  .mv__art {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
   }
 
-  .btn--ghost {
-    border-color: var(--line);
-    background: rgba(255, 255, 255, 0.45);
+  .mv__lines {
+    position: absolute;
+    height: auto;
   }
 
-  .btn--ghost:hover {
-    border-color: var(--accent);
-    color: var(--accent-deep);
+  .mv__lines--pc {
+    top: 33.1%;
+    left: 0;
+    width: 87.4%;
   }
 
-  @keyframes rise {
+  .mv__lines--sp {
+    display: none;
+  }
+
+  .mv__walker-wrap {
+    position: absolute;
+    top: 24.6%;
+    left: 6.75%;
+    width: 12.04%;
+    aspect-ratio: 182 / 709;
+    overflow: hidden;
+    opacity: 0;
+    animation: mv-rise 1s ease forwards 0.25s;
+  }
+
+  .mv__walker {
+    position: absolute;
+    width: 326.35%;
+    height: 125.49%;
+    max-width: none;
+    left: -118.41%;
+    top: -11.4%;
+    object-fit: cover;
+  }
+
+  @keyframes mv-rise {
     from {
       opacity: 0;
-      transform: translateY(1rem);
+      transform: translateY(0.75rem);
     }
     to {
       opacity: 1;
@@ -158,12 +165,49 @@ import { site } from '../data/site';
     }
   }
 
-  @keyframes plane-drift {
-    from {
-      transform: translate3d(0, 0, 0) scale(1);
+  /* SP: Figma iPhone 16 & 17 Pro (402 × 982) */
+  @media (max-width: 768px) {
+    .mv {
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
     }
-    to {
-      transform: translate3d(-1.5%, 1.5%, 0) scale(1.03);
+
+    .mv__frame {
+      width: min(100%, 25.125rem, calc(100dvh * 402 / 982));
+      aspect-ratio: 402 / 982;
+      min-height: 0;
+      margin-inline: auto;
+    }
+
+    .mv__brand {
+      top: 4.68%; /* 46 / 982 */
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .mv__headline {
+      top: 11.4%; /* 112 / 982 */
+      left: 4%;
+      line-height: 1.75;
+    }
+
+    .mv__lines--pc {
+      display: none;
+    }
+
+    .mv__lines--sp {
+      display: block;
+      top: 39%; /* 383 / 982 */
+      left: 0;
+      width: 87.3%; /* 351 / 402 */
+    }
+
+    .mv__walker-wrap {
+      top: 36.25%; /* 356 / 982 */
+      left: 8.2%; /* 33 / 402 */
+      width: 24.6%; /* 99 / 402 */
+      aspect-ratio: 99 / 387;
     }
   }
 </style>

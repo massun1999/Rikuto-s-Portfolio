@@ -6,5 +6,6 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   output: 'server',
   adapter: vercel(),
-  site: 'https://rikuto-s-portfolio.vercel.app',
+  site: 'https://rikutomasuda.jp',
+  devToolbar: { enabled: false },
 });
