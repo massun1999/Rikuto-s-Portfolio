@@ -119,13 +119,14 @@ export const works = {
   title: 'つくったものたち',
   subtitle: 'works',
   items: [
-    { src: '/images/works/01.webp', width: 611, height: 1262, alt: '制作実績 1' },
+    // 一旦非表示: 01 / 05 / 07
+    // { src: '/images/works/01.webp', width: 611, height: 1262, alt: '制作実績 1' },
     { src: '/images/works/02.webp', width: 611, height: 1262, alt: '制作実績 2' },
     { src: '/images/works/03.webp', width: 611, height: 1262, alt: '制作実績 3' },
     { src: '/images/works/04.webp', width: 611, height: 1262, alt: '制作実績 4' },
-    { src: '/images/works/05.webp', width: 611, height: 1262, alt: '制作実績 5' },
+    // { src: '/images/works/05.webp', width: 611, height: 1262, alt: '制作実績 5' },
     { src: '/images/works/06.webp', width: 611, height: 1262, alt: '制作実績 6' },
-    { src: '/images/works/07.webp', width: 611, height: 1262, alt: '制作実績 7' },
+    // { src: '/images/works/07.webp', width: 611, height: 1262, alt: '制作実績 7' },
   ],
 } as const;
 
