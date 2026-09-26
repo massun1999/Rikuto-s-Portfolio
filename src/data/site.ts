@@ -51,7 +51,7 @@ export const philosophy = {
   title: 'てつがく',
   subtitle: 'philosophy',
   headline: '向かう先は、本質',
-  lead: ['外にある正解を、探さない。', '本質は、ユーザーの中にしかない。'],
+  lead: ['外にある正解を探さない。', '本質は、ユーザーの中にしかない。'],
   figure: {
     src: '/images/philosophy/figure.webp',
     width: 83,
@@ -68,11 +68,11 @@ export const philosophy = {
       ],
     },
     {
-      title: ['“綺麗”と”機能する”は、', '別物。'],
+      title: ['“いい感じ”と、', '“機能する”は、別物である。'],
       body: [
-        '目的に沿ってUI/UXを突き詰めれば、時に「綺麗」から離れることもある。',
-        '広告バナーなら、目立つためにあえて野暮ったい見た目を選ぶこともある。',
-        'ただし、いやらしさとは違う。ブランディングを損なわない訴求と、目立つだけの訴求もまた別物だ。',
+        '“いい感じ”は、言語化が停まっている証拠。目的に沿ってUI/UXを突き詰め、“なぜそうしたか”を言い切る形に落とし込む。',
+        '広告バナーなら、CTRを1%上げるため、あえて野暮ったいデザインを選ぶこともある。',
+        'ただし、いやらしさとは違う。品を保ち、機能美を追求する。',
       ],
     },
     {
@@ -104,7 +104,7 @@ export const services = {
       items: [
         'マーケディレクション',
         'Meta,Google広告運用',
-        'SEO戦略立案',
+        'SEO戦略立案から実務まで',
         '広告運用伴走サポート',
       ],
     },
@@ -127,6 +127,12 @@ export const works = {
     // { src: '/images/works/05.webp', width: 611, height: 1262, alt: '制作実績 5' },
     { src: '/images/works/06.webp', width: 611, height: 1262, alt: '制作実績 6' },
     // { src: '/images/works/07.webp', width: 611, height: 1262, alt: '制作実績 7' },
+    { src: '/images/works/08.webp', width: 611, height: 1262, alt: '制作実績 8' },
+    { src: '/images/works/09.webp', width: 611, height: 1262, alt: '制作実績 9' },
+    { src: '/images/works/10.webp', width: 611, height: 1262, alt: '制作実績 10' },
+    { src: '/images/works/11.webp', width: 611, height: 1262, alt: '制作実績 11' },
+    { src: '/images/works/12.webp', width: 611, height: 1262, alt: '制作実績 12' },
+    { src: '/images/works/13.webp', width: 611, height: 1262, alt: '制作実績 13' },
   ],
 } as const;
 

@@ -10,8 +10,14 @@ const slides = [...works.items, ...works.items];
     <p class="sec-sub">{works.subtitle}</p>
   </div>
 
-  <div class="works__viewport" aria-label="制作実績のスライド">
-    <div class="works__track">
+  <div
+    class="works__viewport"
+    data-works-scroller
+    tabindex="0"
+    role="region"
+    aria-label="制作実績のスライド。左右にスクロールできます"
+  >
+    <div class="works__track" data-works-track>
       {
         slides.map((item, index) => (
           <figure class="works__item">
@@ -22,6 +28,7 @@ const slides = [...works.items, ...works.items];
               height={item.height}
               loading="lazy"
               decoding="async"
+              draggable="false"
             />
           </figure>
         ))
@@ -43,8 +50,28 @@ const slides = [...works.items, ...works.items];
 
   .works__viewport {
     margin-top: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     width: 100%;
+    cursor: grab;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+  }
+
+  .works__viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .works__viewport:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  .works__viewport.is-dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
   }
 
   .works__track {
@@ -52,7 +79,7 @@ const slides = [...works.items, ...works.items];
     align-items: center;
     width: max-content;
     gap: clamp(1rem, 0.6rem + 1.2vw, 1.5rem);
-    animation: works-marquee 48s linear infinite;
+    padding-inline: clamp(1rem, 0.6rem + 1.2vw, 1.5rem);
   }
 
   .works__item {
@@ -67,28 +94,149 @@ const slides = [...works.items, ...works.items];
     width: 100%;
     height: 100%;
     object-fit: contain;
-  }
-
-  @keyframes works-marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .works__track {
-      animation: none;
-      flex-wrap: wrap;
-      width: min(100% - (var(--space-inline) * 2), 73.9rem);
-      margin-inline: auto;
-      justify-content: center;
-    }
-
-    .works__item:nth-child(n + 5) {
-      display: none;
+    .works__viewport {
+      scroll-behavior: auto;
     }
   }
 </style>
+
+<script>
+  function initWorksScroller(viewport: HTMLElement) {
+    const track = viewport.querySelector<HTMLElement>('[data-works-track]');
+    if (!track) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const autoSpeed = 0.45; // px per frame @ ~60fps ≈ 27px/s
+    const resumeDelay = 2200;
+
+    let loopWidth = 0;
+    let dragging = false;
+    let pointerId: number | null = null;
+    let startX = 0;
+    let startScroll = 0;
+    let autoPaused = false;
+    let resumeTimer = 0;
+    let lastTs = 0;
+
+    const measure = () => {
+      // 複製2セットのうち半分 = 1ループ分
+      loopWidth = track.scrollWidth / 2;
+      if (loopWidth > 0 && viewport.scrollLeft === 0) {
+        // 端で左右どちらにもスクロールできる初期位置
+        viewport.scrollLeft = 1;
+      }
+    };
+
+    const wrapScroll = () => {
+      if (loopWidth <= 0) return;
+      if (viewport.scrollLeft >= loopWidth) {
+        viewport.scrollLeft -= loopWidth;
+      } else if (viewport.scrollLeft <= 0) {
+        viewport.scrollLeft += loopWidth;
+      }
+    };
+
+    const pauseAuto = () => {
+      autoPaused = true;
+      window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(() => {
+        autoPaused = false;
+        lastTs = 0;
+      }, resumeDelay);
+    };
+
+    // タッチはブラウザの横スクロールに任せ、マウスだけ掴んでドラッグ
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.pointerType !== 'mouse' || event.button !== 0) {
+        pauseAuto();
+        return;
+      }
+      dragging = true;
+      pointerId = event.pointerId;
+      startX = event.clientX;
+      startScroll = viewport.scrollLeft;
+      viewport.classList.add('is-dragging');
+      viewport.setPointerCapture(event.pointerId);
+      pauseAuto();
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (!dragging || event.pointerId !== pointerId) return;
+      viewport.scrollLeft = startScroll - (event.clientX - startX);
+      wrapScroll();
+    };
+
+    const endDrag = (event: PointerEvent) => {
+      if (!dragging || event.pointerId !== pointerId) return;
+      dragging = false;
+      pointerId = null;
+      viewport.classList.remove('is-dragging');
+      try {
+        viewport.releasePointerCapture(event.pointerId);
+      } catch {
+        /* already released */
+      }
+      pauseAuto();
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      // 縦ホイールでも横に流せる
+      if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+        event.preventDefault();
+        viewport.scrollLeft += event.deltaY;
+        wrapScroll();
+      }
+      pauseAuto();
+    };
+
+    const tick = (ts: number) => {
+      requestAnimationFrame(tick);
+      if (reduceMotion || dragging || autoPaused || document.hidden) {
+        lastTs = ts;
+        return;
+      }
+      if (!lastTs) lastTs = ts;
+      const dt = Math.min(32, ts - lastTs);
+      lastTs = ts;
+      viewport.scrollLeft += autoSpeed * (dt / 16.67);
+      wrapScroll();
+    };
+
+    viewport.addEventListener('pointerdown', onPointerDown);
+    viewport.addEventListener('pointermove', onPointerMove);
+    viewport.addEventListener('pointerup', endDrag);
+    viewport.addEventListener('pointercancel', endDrag);
+    viewport.addEventListener('scroll', wrapScroll, { passive: true });
+    viewport.addEventListener('touchstart', pauseAuto, { passive: true });
+    viewport.addEventListener('wheel', onWheel, { passive: false });
+    viewport.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      viewport.scrollLeft += event.key === 'ArrowRight' ? 120 : -120;
+      wrapScroll();
+      pauseAuto();
+    });
+
+    const ro = new ResizeObserver(() => {
+      const prev = viewport.scrollLeft;
+      measure();
+      viewport.scrollLeft = Math.min(prev, Math.max(0, track.scrollWidth - viewport.clientWidth));
+      wrapScroll();
+    });
+    ro.observe(track);
+    measure();
+    requestAnimationFrame(tick);
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) lastTs = 0;
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-works-scroller]').forEach(initWorksScroller);
+</script>
